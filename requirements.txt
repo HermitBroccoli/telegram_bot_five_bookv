@@ -1,0 +1,10 @@
+aiogram
+python-dotenv
+pysqlite3
+schedule
+beautifulsoup4
+pytz
+aiocron
+aiohttp
+aiofiles
+re
