@@ -34,6 +34,23 @@ phrases = [
 	"Рад быть полезным!"
 ]
 
+one_felicitation = (
+	"Поздравляем вас с чудесным и ярким праздником - Новым Годом! Желаем вам исполнения всех ваших желаний, пусть удача и добро станут вашими верными спутниками в грядущем году.",
+	"Пускай радость и счастье войдут в ваш дом, а ваши сердца наполнятся любовью и теплом. Желаем вам отменного здоровья, грандиозных успехов и покорения новых высот в жизни и во всех начинаниях.",
+	"Давайте делиться теплом и поддерживать друг друга, ведь это то, что делает нас особенными! Пусть Новый Год подарит каждому из вас множество ярких моментов, незабываемых встреч и удивительных приключений!",
+	"Счастливого Нового Года, дорогие друзья! Пусть праздники пройдут радостно и незабываемо, а каждый день в новом году принесет вам только позитивные эмоции и приятные сюрпризы!"
+)
+
+
+
+async def new_year(felicitation=None):
+	users = base.list_users()
+
+	felicitation = "\n".join(one_felicitation)
+
+	for user in users:
+		await bot.send_message(chat_id=user, text=felicitation)
+
 
 async def get_html():
 	try:
@@ -78,8 +95,8 @@ async def process_html():
 
 @dp.message(Command('yrights'))
 async def inc(message: types.Message):
-    res = base.list_users()
-    print(res)
+	res = base.list_users()
+	print(res)
 
 
 @dp.message(Command("start"))
@@ -105,21 +122,23 @@ async def no_hp(message: types.Message):
 	)
 
 async def send_word_daily():
-    await get_html()
-    await process_html()
+	await get_html()
+	await process_html()
 
 async def main():
 	logging.basicConfig(level=logging.INFO)
 	await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    try:
-        loop = asyncio.get_event_loop()
-        loop.create_task(main())
+	try:
+		loop = asyncio.get_event_loop()
+		loop.create_task(main())
 
-        # Устанавливаем часовой пояс Asia/Vladivostok для функции send_word_daily
-        aiocron.crontab('30 15 * * *', func=send_word_daily, tz=pytz.timezone('Asia/Vladivostok'))
+		# Устанавливаем часовой пояс Asia/Vladivostok для функции send_word_daily
+		aiocron.crontab('0 13 * * *', func=send_word_daily, tz=pytz.timezone('Asia/Vladivostok'))
+		aiocron.crontab('0 0 1 1 *', func=new_year, tz=pytz.timezone('Asia/Vladivostok'))
+		aiocron.crontab('0 0 1 1 *', func=new_year, tz=pytz.timezone('Europe/Moscow'))
 
-        loop.run_forever()  # Запускаем цикл событий напрямую
-    except KeyboardInterrupt:
-        sys.exit()
+		loop.run_forever()  # Запускаем цикл событий напрямую
+	except KeyboardInterrupt:
+		sys.exit()
